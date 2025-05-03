@@ -18,7 +18,7 @@ class AlbumSearch extends Album
     {
         return [
             [['idalbum', 'artista_idartista'], 'integer'],
-            [['titulo', 'fecha_lanzamiento'], 'safe'],
+            [['titulo', 'fecha_lanzamiento', 'portadaAlbum'], 'safe'],
         ];
     }
 
@@ -64,7 +64,8 @@ class AlbumSearch extends Album
             'artista_idartista' => $this->artista_idartista,
         ]);
 
-        $query->andFilterWhere(['like', 'titulo', $this->titulo]);
+        $query->andFilterWhere(['like', 'titulo', $this->titulo])
+            ->andFilterWhere(['like', 'portadaAlbum', $this->portadaAlbum]);
 
         return $dataProvider;
     }

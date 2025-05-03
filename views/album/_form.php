@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fecha_lanzamiento')->textInput() ?>
 
+    <?= $form->field($model, 'portadaAlbum')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'artista_idartista')->textInput() ?>
 
     <div class="form-group">

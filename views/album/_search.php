@@ -24,6 +24,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fecha_lanzamiento') ?>
 
+    <?= $form->field($model, 'portadaAlbum') ?>
+
     <?= $form->field($model, 'artista_idartista') ?>
 
     <div class="form-group">

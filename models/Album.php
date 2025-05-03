@@ -10,6 +10,7 @@ use Yii;
  * @property int $idalbum
  * @property string $titulo
  * @property string $fecha_lanzamiento
+ * @property string $portadaAlbum
  * @property int $artista_idartista
  *
  * @property Artista $artistaIdartista
@@ -33,10 +34,11 @@ class Album extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['titulo', 'fecha_lanzamiento', 'artista_idartista'], 'required'],
+            [['titulo', 'fecha_lanzamiento', 'portadaAlbum', 'artista_idartista'], 'required'],
             [['fecha_lanzamiento'], 'safe'],
             [['artista_idartista'], 'integer'],
             [['titulo'], 'string', 'max' => 45],
+            [['portadaAlbum'], 'string', 'max' => 500],
             [['artista_idartista'], 'exist', 'skipOnError' => true, 'targetClass' => Artista::class, 'targetAttribute' => ['artista_idartista' => 'idartista']],
         ];
     }
@@ -50,6 +52,7 @@ class Album extends \yii\db\ActiveRecord
             'idalbum' => Yii::t('app', 'Idalbum'),
             'titulo' => Yii::t('app', 'Titulo'),
             'fecha_lanzamiento' => Yii::t('app', 'Fecha Lanzamiento'),
+            'portadaAlbum' => Yii::t('app', 'Portada Album'),
             'artista_idartista' => Yii::t('app', 'Artista Idartista'),
         ];
     }

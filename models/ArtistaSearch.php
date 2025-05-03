@@ -18,7 +18,7 @@ class ArtistaSearch extends Artista
     {
         return [
             [['idartista'], 'integer'],
-            [['nombre', 'biografia'], 'safe'],
+            [['nombre', 'biografia', 'imagenArtista'], 'safe'],
         ];
     }
 
@@ -63,7 +63,8 @@ class ArtistaSearch extends Artista
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre])
-            ->andFilterWhere(['like', 'biografia', $this->biografia]);
+            ->andFilterWhere(['like', 'biografia', $this->biografia])
+            ->andFilterWhere(['like', 'imagenArtista', $this->imagenArtista]);
 
         return $dataProvider;
     }

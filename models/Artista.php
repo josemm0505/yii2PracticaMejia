@@ -10,6 +10,7 @@ use Yii;
  * @property int $idartista
  * @property string $nombre
  * @property string $biografia
+ * @property string $imagenArtista
  *
  * @property Album[] $albums
  */
@@ -31,9 +32,10 @@ class Artista extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'biografia'], 'required'],
+            [['nombre', 'biografia', 'imagenArtista'], 'required'],
             [['nombre'], 'string', 'max' => 45],
             [['biografia'], 'string', 'max' => 2000],
+            [['imagenArtista'], 'string', 'max' => 500],
         ];
     }
 
@@ -46,6 +48,7 @@ class Artista extends \yii\db\ActiveRecord
             'idartista' => Yii::t('app', 'Idartista'),
             'nombre' => Yii::t('app', 'Nombre'),
             'biografia' => Yii::t('app', 'Biografia'),
+            'imagenArtista' => Yii::t('app', 'Imagen Artista'),
         ];
     }
 
