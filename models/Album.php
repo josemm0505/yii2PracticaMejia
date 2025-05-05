@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "album".
@@ -18,6 +19,7 @@ use Yii;
  */
 class Album extends \yii\db\ActiveRecord
 {
+    public $imageFile;
 
 
     /**
@@ -34,12 +36,13 @@ class Album extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['titulo', 'fecha_lanzamiento', 'portadaAlbum', 'artista_idartista'], 'required'],
+            [['titulo', 'fecha_lanzamiento', 'artista_idartista'], 'required'],
             [['fecha_lanzamiento'], 'safe'],
             [['artista_idartista'], 'integer'],
             [['titulo'], 'string', 'max' => 45],
             [['portadaAlbum'], 'string', 'max' => 500],
             [['artista_idartista'], 'exist', 'skipOnError' => true, 'targetClass' => Artista::class, 'targetAttribute' => ['artista_idartista' => 'idartista']],
+            [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, webp']
         ];
     }
 
@@ -53,9 +56,37 @@ class Album extends \yii\db\ActiveRecord
             'titulo' => Yii::t('app', 'Titulo'),
             'fecha_lanzamiento' => Yii::t('app', 'Fecha Lanzamiento'),
             'portadaAlbum' => Yii::t('app', 'Portada Album'),
-            'artista_idartista' => Yii::t('app', 'Artista Idartista'),
+            'artista_idartista' => Yii::t('app', 'Artista'),
         ];
     }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            if ($this->imageFile instanceof UploadedFile) {
+                $filename = $this->idalbum . '_' . preg_replace('/\s+/', '_', $this->titulo) . '_' . date('Ymd_His') . '.' . $this->imageFile->extension;
+                $path = Yii::getAlias('@webroot/portadas/') . $filename;
+    
+                if ($this->imageFile->saveAs($path)) {
+                    if ($this->portadaAlbum && $this->portadaAlbum != $filename) {
+                        $this->deletePortada();
+                    }
+    
+                    $this->portadaAlbum = $filename;
+                    return $this->save(false); // Guardamos la nueva ruta de imagen
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+        public function deletePortada(){
+            $path = Yii::getAlias('@webroot/portadas/') . $this -> portadaAlbum;
+            if(file_exists($path)){
+                unlink($path);
+            }
+        }
 
     /**
      * Gets query for [[ArtistaIdartista]].

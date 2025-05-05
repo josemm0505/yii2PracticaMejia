@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Album;
 use app\models\AlbumSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+
 
 /**
  * AlbumController implements the CRUD actions for Album model.
@@ -66,23 +69,53 @@ class AlbumController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
-    {
-        $model = new Album();
 
-        if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'idalbum' => $model->idalbum, 'artista_idartista' => $model->artista_idartista]);
-            }
-        } else {
-            $model->loadDefaultValues();
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
+     public function actionCreate()
+     {
+         $model = new Album();
+         $message = '';
+     
+         if ($this->request->isPost) {
+             $transaction = Yii::$app->db->beginTransaction();
+     
+             try {
+                 if ($model->load($this->request->post())) {
+                     $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+     
+                     // Si no se sube imagen, usar una por defecto
+                     if (!$model->imageFile) {
+                         $model->portadaAlbum = 'default.jpg'; // Asegúrate que exista en /web/portadas/
+                     }
+     
+                     // Guardar el modelo primero para obtener el ID
+                     if ($model->save(false)) {
+                         // Si hay imagen, subirla
+                         if ($model->imageFile && !$model->upload()) {
+                             throw new \Exception('Error al subir la imagen.');
+                         }
+     
+                         $transaction->commit();
+                         Yii::$app->session->setFlash('success', 'Álbum creado correctamente.');
+                         return $this->redirect(['view', 'idalbum' => $model->idalbum, 'artista_idartista' => $model->artista_idartista]);
+                     } else {
+                         throw new \Exception('Error al guardar el álbum.');
+                     }
+                 }
+             } catch (\Exception $e) {
+                 $transaction->rollBack();
+                 Yii::error($e->getMessage(), __METHOD__); // Guarda el error en el log
+                 Yii::$app->session->setFlash('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
+             }
+         } else {
+             $model->loadDefaultValues();
+         }
+     
+         return $this->render('create', [
+             'model' => $model,
+             'message' => $message
+         ]);
+     }
+     
     /**
      * Updates an existing Album model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -91,16 +124,26 @@ class AlbumController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
+
     public function actionUpdate($idalbum, $artista_idartista)
     {
         $model = $this->findModel($idalbum, $artista_idartista);
+        $message = '';
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'idalbum' => $model->idalbum, 'artista_idartista' => $model->artista_idartista]);
+        if($this -> request -> isPost && $model -> load($this -> request -> post())){
+            $model -> imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if($model -> save() && (!$model ->imageFile || $model-> upload())){
+                return $this->redirect(['view', 'idalbum' => $model->idalbum, 'artista_idartista' => $model->artista_idartista]);
+            }else{
+                Yii::$app->session->setFlash('error', 'Error al guardar la portada');
+                $message = 'Error al guardar la portada'; 
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'message' => $message
         ]);
     }
 
@@ -114,9 +157,10 @@ class AlbumController extends Controller
      */
     public function actionDelete($idalbum, $artista_idartista)
     {
-        $this->findModel($idalbum, $artista_idartista)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($idalbum, $artista_idartista);
+        $model -> deletePortada();
+        $model -> delete();
+            return $this->redirect(['index']);
     }
 
     /**

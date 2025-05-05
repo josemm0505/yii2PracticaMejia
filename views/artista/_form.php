@@ -10,13 +10,24 @@ use yii\widgets\ActiveForm;
 
 <div class="artista-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin([
+        'options' => ['enctype' => 'multipart/form-data']
+    ]); ?>
 
-    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
+    <?php if($model->imagenArtista): ?>
+        <div class="form-group">
+            <?= Html::label('Imagen Actual') ?>
+            <div>
+                <?= Html::img(Yii::getAlias('@web') . '/imgArtistas/' . $model->imagenArtista, ['style' => 'width: 200px']) ?>
+            </div>
+        </div>
+    <?php endif; ?>
 
-    <?= $form->field($model, 'biografia')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'nombre')->textInput(['maxlength' => true,'placeholder' => 'Nombre del Artista', 'required'=>true]) ?>
 
-    <?= $form->field($model, 'imagenArtista')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'biografia')->textarea(['maxlength' => 2000,'placeholder' => 'Biografía del Artista', 'required'=>true]) ?>
+
+    <?= $form->field($model, 'imageFile')->fileInput()->label("Seleccione una Imagen") ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

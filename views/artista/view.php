@@ -32,7 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'idartista',
             'nombre',
             'biografia',
-            'imagenArtista',
+            //'imagenArtista',
+            [
+                'attribute' => 'imagenArtista',
+                'format' => 'html',
+                'value' => function ($model) {
+                    return Html::img(Yii::getAlias('@web') . '/imgArtistas/' . $model->imagenArtista, ['style' => 'width: 200px']);
+                }
+            ]
         ],
     ]) ?>
 

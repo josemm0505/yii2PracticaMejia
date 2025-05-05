@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "artista".
@@ -16,6 +17,7 @@ use Yii;
  */
 class Artista extends \yii\db\ActiveRecord
 {
+    public $imageFile;
 
 
     /**
@@ -32,7 +34,7 @@ class Artista extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombre', 'biografia', 'imagenArtista'], 'required'],
+            [['nombre', 'biografia'], 'required'],
             [['nombre'], 'string', 'max' => 45],
             [['biografia'], 'string', 'max' => 2000],
             [['imagenArtista'], 'string', 'max' => 500],
@@ -51,6 +53,34 @@ class Artista extends \yii\db\ActiveRecord
             'imagenArtista' => Yii::t('app', 'Imagen Artista'),
         ];
     }
+
+    public function upload()
+    {
+        if ($this->validate()) {
+            if ($this->imageFile instanceof UploadedFile) {
+                $filename = $this->idartista . '_' . preg_replace('/\s+/', '_', $this->nombre) . '_' . date('Ymd_His') . '.' . $this->imageFile->extension;
+                $path = Yii::getAlias('@webroot/imgArtistas/') . $filename;
+    
+                if ($this->imageFile->saveAs($path)) {
+                    if ($this->imagenArtista && $this->imagenArtista != $filename) {
+                        $this->deleteArtista();
+                    }
+    
+                    $this->imagenArtista = $filename;
+                    return $this->save(false); // Guardamos la nueva ruta de imagen
+                }
+            }
+        }
+        return false;
+    }
+    
+    
+        public function deleteArtista(){
+            $path = Yii::getAlias('@webroot/imgArtistas/') . $this -> imagenArtista;
+            if(file_exists($path)){
+                unlink($path);
+            }
+        }
 
     /**
      * Gets query for [[Albums]].

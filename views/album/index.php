@@ -30,10 +30,19 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'idalbum',
+            //'idalbum',
             'titulo',
             'fecha_lanzamiento',
-            'portadaAlbum',
+            //'portadaAlbum',
+            [
+                'attribute' => 'portadaAlbum',
+                'format' => 'html',
+                'value' => function ($model) {
+                    if($model-> portadaAlbum)
+                        return Html::img(Yii::getAlias('@web') . '/portadas/' . $model->portadaAlbum, ['style' => 'width: 200px']);
+                    return null;
+                }
+            ],
             'artista_idartista',
             [
                 'class' => ActionColumn::className(),

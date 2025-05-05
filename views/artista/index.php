@@ -33,7 +33,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'idartista',
             'nombre',
             'biografia',
-            'imagenArtista',
+            //'imagenArtista',
+            [
+                'attribute' => 'imagenArtista',
+                'format' => 'html',
+                'value' => function ($model) {
+                    if($model -> imagenArtista)
+                        return Html::img(Yii::getAlias('@web') . '/imgArtistas/' . $model->imagenArtista, ['style' => 'width: 200px']);
+                    return null;
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Artista $model, $key, $index, $column) {

@@ -54,9 +54,9 @@ class Cancion extends \yii\db\ActiveRecord
             'idcancion' => Yii::t('app', 'Idcancion'),
             'titulo' => Yii::t('app', 'Titulo'),
             'duracion' => Yii::t('app', 'Duracion'),
-            'album_idalbum' => Yii::t('app', 'Album Idalbum'),
-            'album_artista_idartista' => Yii::t('app', 'Album Artista Idartista'),
-            'genero_idgenero' => Yii::t('app', 'Genero Idgenero'),
+            'album_idalbum' => Yii::t('app', 'Album'),
+            'album_artista_idartista' => Yii::t('app', 'Artista'),
+            'genero_idgenero' => Yii::t('app', 'Genero'),
         ];
     }
 

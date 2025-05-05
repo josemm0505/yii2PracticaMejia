@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Artista;
 use app\models\ArtistaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ArtistaController implements the CRUD actions for Artista model.
@@ -68,17 +70,46 @@ class ArtistaController extends Controller
     public function actionCreate()
     {
         $model = new Artista();
-
+        $message = '';
+    
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'idartista' => $model->idartista]);
+            $transaction = Yii::$app->db->beginTransaction();
+    
+            try {
+                if ($model->load($this->request->post())) {
+                    $model->imageFile = UploadedFile::getInstance($model, 'imageFile');
+    
+                    // Si no se sube imagen, usar una por defecto
+                    if (!$model->imageFile) {
+                        $model->imagenArtista = 'default.jpg'; // Asegúrate que exista en /web/portadas/
+                    }
+    
+                    // Guardar el modelo primero para obtener el ID
+                    if ($model->save(false)) {
+                        // Si hay imagen, subirla
+                        if ($model->imageFile && !$model->upload()) {
+                            throw new \Exception('Error al subir la imagen.');
+                        }
+    
+                        $transaction->commit();
+                        Yii::$app->session->setFlash('success', 'Álbum creado correctamente.');
+                        return $this->redirect(['view', 'idartista' => $model->idartista]);
+                    } else {
+                        throw new \Exception('Error al guardar el álbum.');
+                    }
+                }
+            } catch (\Exception $e) {
+                $transaction->rollBack();
+                Yii::error($e->getMessage(), __METHOD__); // Guarda el error en el log
+                Yii::$app->session->setFlash('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
             }
         } else {
             $model->loadDefaultValues();
         }
-
+    
         return $this->render('create', [
             'model' => $model,
+            'message' => $message
         ]);
     }
 
@@ -92,13 +123,22 @@ class ArtistaController extends Controller
     public function actionUpdate($idartista)
     {
         $model = $this->findModel($idartista);
+        $message = '';
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'idartista' => $model->idartista]);
+        if($this -> request -> isPost && $model -> load($this -> request -> post())){
+            $model -> imageFile = UploadedFile::getInstance($model, 'imageFile');
+
+            if($model -> save() && (!$model ->imageFile || $model-> upload())){
+                return $this->redirect(['view', 'idartista' => $model->idartista]);
+            }else{
+                Yii::$app->session->setFlash('error', 'Error al guardar la portada');
+                $message = 'Error al guardar la portada'; 
+            }
         }
 
         return $this->render('update', [
             'model' => $model,
+            'message' => $message
         ]);
     }
 
@@ -111,9 +151,10 @@ class ArtistaController extends Controller
      */
     public function actionDelete($idartista)
     {
-        $this->findModel($idartista)->delete();
-
-        return $this->redirect(['index']);
+        $model = $this->findModel($idartista);
+        $model -> deleteArtista();
+        $model -> delete();
+            return $this->redirect(['index']);
     }
 
     /**

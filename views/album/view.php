@@ -32,7 +32,14 @@ $this->params['breadcrumbs'][] = $this->title;
             'idalbum',
             'titulo',
             'fecha_lanzamiento',
-            'portadaAlbum',
+            //'portadaAlbum',
+            [
+                'attribute' => 'portadaAlbum',
+                'format' => 'html',
+                'value' => function ($model) {
+                    return Html::img(Yii::getAlias('@web') . '/portadas/' . $model->portadaAlbum, ['style' => 'width: 200px']);
+                }
+            ],
             'artista_idartista',
         ],
     ]) ?>
