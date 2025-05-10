@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use Yii;
 use app\models\Cancion;
 use app\models\CancionSearch;
 use yii\web\Controller;
@@ -16,19 +17,35 @@ class CancionController extends Controller
     /**
      * @inheritDoc
      */
-    public function behaviors()
+       public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions'=>['index'],
+                        'roles' => ['?'],
                     ],
+                    [
+                        'allow' => true,
+                        'actions'=>['index', 'view', 'create', 'update', 'delete'],
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->user->identity->role == 'admin';
+                        }
+                    ]
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => \yii\filters\VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**

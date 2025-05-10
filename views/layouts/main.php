@@ -49,9 +49,11 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
                     ['label' => 'Cancion', 'url' => ['/cancion/index']],
                     ['label' => 'Género', 'url' => ['/genero/index']],
                     ['label' => 'Playlist', 'url' => ['/playlist/index']],
-                    ['label' => 'Usuario', 'url' => ['/usuario/index']],
+                    ['label' => 'Usuarios', 'url' => ['/usuario/index']],
+                    (!Yii :: $app->user->isGuest && Yii :: $app->user->identity->role != 'admin') ? '' :['label' => 'Login', 'url' => ['/user/index']],
                 ],
             ],
+            Yii :: $app->user->isGuest ? '':['label' => 'Cambiar Contraseña', 'url' => ['/user/change-password']],
             Yii::$app->user->isGuest
                 ? ['label' => 'Iniciar Sesion', 'url' => ['/site/login']]
                 : '<li class="nav-item">'
