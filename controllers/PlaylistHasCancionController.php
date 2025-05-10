@@ -2,17 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\Playlist;
-use app\models\PlaylistSearch;
+use app\models\PlaylistHasCancion;
+use app\models\PlaylistHasCancionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\helpers\ArrayHelper;
 
 /**
- * PlaylistController implements the CRUD actions for Playlist model.
+ * PlaylistHasCancionController implements the CRUD actions for PlaylistHasCancion model.
  */
-class PlaylistController extends Controller
+class PlaylistHasCancionController extends Controller
 {
     /**
      * @inheritDoc
@@ -33,13 +32,13 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Lists all Playlist models.
+     * Lists all PlaylistHasCancion models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new PlaylistSearch();
+        $searchModel = new PlaylistHasCancionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -49,31 +48,31 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Displays a single Playlist model.
-     * @param int $idplaylist Idplaylist
-     * @param int $usuario_idusuario Usuario Idusuario
+     * Displays a single PlaylistHasCancion model.
+     * @param int $playlist_idplaylist Playlist Idplaylist
+     * @param int $cancion_idcancion Cancion Idcancion
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($idplaylist, $usuario_idusuario)
+    public function actionView($playlist_idplaylist, $cancion_idcancion)
     {
         return $this->render('view', [
-            'model' => $this->findModel($idplaylist, $usuario_idusuario),
+            'model' => $this->findModel($playlist_idplaylist, $cancion_idcancion),
         ]);
     }
 
     /**
-     * Creates a new Playlist model.
+     * Creates a new PlaylistHasCancion model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Playlist();
+        $model = new PlaylistHasCancion();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'idplaylist' => $model->idplaylist, 'usuario_idusuario' => $model->usuario_idusuario]);
+                return $this->redirect(['view', 'playlist_idplaylist' => $model->playlist_idplaylist, 'cancion_idcancion' => $model->cancion_idcancion]);
             }
         } else {
             $model->loadDefaultValues();
@@ -85,22 +84,20 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Updates an existing Playlist model.
+     * Updates an existing PlaylistHasCancion model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $idplaylist Idplaylist
-     * @param int $usuario_idusuario Usuario Idusuario
+     * @param int $playlist_idplaylist Playlist Idplaylist
+     * @param int $cancion_idcancion Cancion Idcancion
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($idplaylist, $usuario_idusuario)
+    public function actionUpdate($playlist_idplaylist, $cancion_idcancion)
     {
-        $model = $this->findModel($idplaylist, $usuario_idusuario);
+        $model = $this->findModel($playlist_idplaylist, $cancion_idcancion);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'idplaylist' => $model->idplaylist, 'usuario_idusuario' => $model->usuario_idusuario]);
+            return $this->redirect(['view', 'playlist_idplaylist' => $model->playlist_idplaylist, 'cancion_idcancion' => $model->cancion_idcancion]);
         }
-
-        $model-> canciones = ArrayHelper :: getColumn($model -> getCancionIdcancions()->asArray() -> all(), 'idcancion');
 
         return $this->render('update', [
             'model' => $model,
@@ -108,31 +105,31 @@ class PlaylistController extends Controller
     }
 
     /**
-     * Deletes an existing Playlist model.
+     * Deletes an existing PlaylistHasCancion model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $idplaylist Idplaylist
-     * @param int $usuario_idusuario Usuario Idusuario
+     * @param int $playlist_idplaylist Playlist Idplaylist
+     * @param int $cancion_idcancion Cancion Idcancion
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($idplaylist, $usuario_idusuario)
+    public function actionDelete($playlist_idplaylist, $cancion_idcancion)
     {
-        $this->findModel($idplaylist, $usuario_idusuario)->delete();
+        $this->findModel($playlist_idplaylist, $cancion_idcancion)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Playlist model based on its primary key value.
+     * Finds the PlaylistHasCancion model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $idplaylist Idplaylist
-     * @param int $usuario_idusuario Usuario Idusuario
-     * @return Playlist the loaded model
+     * @param int $playlist_idplaylist Playlist Idplaylist
+     * @param int $cancion_idcancion Cancion Idcancion
+     * @return PlaylistHasCancion the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($idplaylist, $usuario_idusuario)
+    protected function findModel($playlist_idplaylist, $cancion_idcancion)
     {
-        if (($model = Playlist::findOne(['idplaylist' => $idplaylist, 'usuario_idusuario' => $usuario_idusuario])) !== null) {
+        if (($model = PlaylistHasCancion::findOne(['playlist_idplaylist' => $playlist_idplaylist, 'cancion_idcancion' => $cancion_idcancion])) !== null) {
             return $model;
         }
 

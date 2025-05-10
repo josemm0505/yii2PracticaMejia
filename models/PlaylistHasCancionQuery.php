@@ -3,11 +3,11 @@
 namespace app\models;
 
 /**
- * This is the ActiveQuery class for [[Playlist_Has_Cancion]].
+ * This is the ActiveQuery class for [[PlaylistHasCancion]].
  *
- * @see Playlist_Has_Cancion
+ * @see PlaylistHasCancion
  */
-class Playlist_Has_CancionQuery extends \yii\db\ActiveQuery
+class PlaylistHasCancionQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class Playlist_Has_CancionQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Playlist_Has_Cancion[]|array
+     * @return PlaylistHasCancion[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class Playlist_Has_CancionQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Playlist_Has_Cancion|array|null
+     * @return PlaylistHasCancion|array|null
      */
     public function one($db = null)
     {

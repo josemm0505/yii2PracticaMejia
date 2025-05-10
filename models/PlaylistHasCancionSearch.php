@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Playlist_Has_Cancion;
+use app\models\PlaylistHasCancion;
 
 /**
- * Playlist_Has_CancionSearch represents the model behind the search form of `app\models\Playlist_Has_Cancion`.
+ * PlaylistHasCancionSearch represents the model behind the search form of `app\models\PlaylistHasCancion`.
  */
-class Playlist_Has_CancionSearch extends Playlist_Has_Cancion
+class PlaylistHasCancionSearch extends PlaylistHasCancion
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class Playlist_Has_CancionSearch extends Playlist_Has_Cancion
     public function rules()
     {
         return [
-            [['playlist_idplaylist', 'playlist_usuario_idusuario', 'cancion_idcancion', 'cancion_album_idalbum', 'cancion_album_artista_idartista', 'cancion_genero_idgenero'], 'integer'],
+            [['playlist_idplaylist', 'cancion_idcancion'], 'integer'],
         ];
     }
 
@@ -40,7 +40,7 @@ class Playlist_Has_CancionSearch extends Playlist_Has_Cancion
      */
     public function search($params, $formName = null)
     {
-        $query = Playlist_Has_Cancion::find();
+        $query = PlaylistHasCancion::find();
 
         // add conditions that should always apply here
 
@@ -59,11 +59,7 @@ class Playlist_Has_CancionSearch extends Playlist_Has_Cancion
         // grid filtering conditions
         $query->andFilterWhere([
             'playlist_idplaylist' => $this->playlist_idplaylist,
-            'playlist_usuario_idusuario' => $this->playlist_usuario_idusuario,
             'cancion_idcancion' => $this->cancion_idcancion,
-            'cancion_album_idalbum' => $this->cancion_album_idalbum,
-            'cancion_album_artista_idartista' => $this->cancion_album_artista_idartista,
-            'cancion_genero_idgenero' => $this->cancion_genero_idgenero,
         ]);
 
         return $dataProvider;

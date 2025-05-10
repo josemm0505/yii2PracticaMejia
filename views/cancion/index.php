@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'duracion',
             'album_idalbum',
             'album_artista_idartista',
-            //'genero_idgenero',
+            'genero_idgenero',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Cancion $model, $key, $index, $column) {

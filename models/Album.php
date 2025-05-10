@@ -20,6 +20,7 @@ use yii\web\UploadedFile;
 class Album extends \yii\db\ActiveRecord
 {
     public $imageFile;
+    public $canciones;
 
 
     /**
@@ -41,6 +42,7 @@ class Album extends \yii\db\ActiveRecord
             [['artista_idartista'], 'integer'],
             [['titulo'], 'string', 'max' => 45],
             [['portadaAlbum'], 'string', 'max' => 500],
+            [['canciones'],'each', 'rule' => ['integer']],
             [['artista_idartista'], 'exist', 'skipOnError' => true, 'targetClass' => Artista::class, 'targetAttribute' => ['artista_idartista' => 'idartista']],
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, webp']
         ];
@@ -57,6 +59,7 @@ class Album extends \yii\db\ActiveRecord
             'fecha_lanzamiento' => Yii::t('app', 'Fecha Lanzamiento'),
             'portadaAlbum' => Yii::t('app', 'Portada Album'),
             'artista_idartista' => Yii::t('app', 'Artista'),
+            'canciones' => Yii::t('app', 'Canciones'),
         ];
     }
 

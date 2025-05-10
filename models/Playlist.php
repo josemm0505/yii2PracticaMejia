@@ -10,6 +10,8 @@ use Yii;
  * @property int $idplaylist
  * @property string $nombre
  * @property int $usuario_idusuario
+ * @property string $createAt
+ * @property string $updateAt
  *
  * @property Cancion[] $cancionIdcancions
  * @property PlaylistHasCancion[] $playlistHasCancions
@@ -17,6 +19,8 @@ use Yii;
  */
 class Playlist extends \yii\db\ActiveRecord
 {
+
+    public $canciones = [];
 
 
     /**
@@ -35,7 +39,9 @@ class Playlist extends \yii\db\ActiveRecord
         return [
             [['nombre', 'usuario_idusuario'], 'required'],
             [['usuario_idusuario'], 'integer'],
+            [['createAt', 'updateAt'], 'safe'],
             [['nombre'], 'string', 'max' => 45],
+            [['canciones'],'each', 'rule' => ['integer']],
             [['usuario_idusuario'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::class, 'targetAttribute' => ['usuario_idusuario' => 'idusuario']],
         ];
     }
@@ -48,9 +54,34 @@ class Playlist extends \yii\db\ActiveRecord
         return [
             'idplaylist' => Yii::t('app', 'Idplaylist'),
             'nombre' => Yii::t('app', 'Nombre'),
-            'usuario_idusuario' => Yii::t('app', 'Usuario'),
+            'usuario_idusuario' => Yii::t('app', 'Usuario Idusuario'),
+            'canciones' => Yii::t('app', 'Canciones')
         ];
     }
+
+    public function afterSave($insert, $changedAttributes){
+        parent::afterSave($insert, $changedAttributes);
+    
+        if(is_array($this->canciones)){
+            foreach($this->canciones as $cancionesId){
+                $playlistHasCancions = new PlaylistHasCancion();
+                $playlistHasCancions->playlist_idplaylist = $this->idplaylist;
+                $playlistHasCancions->cancion_idcancion = $cancionesId;
+                $playlistHasCancions->save();
+            }
+        }
+    }
+    
+    public function beforeDelete(){
+        if(!parent::beforeDelete()){
+            return false;
+        }
+    
+        PlaylistHasCancion::deleteAll(['playlist_idplaylist' => $this->idplaylist]);
+    
+        return true;
+    }
+
 
     /**
      * Gets query for [[CancionIdcancions]].
@@ -59,7 +90,7 @@ class Playlist extends \yii\db\ActiveRecord
      */
     public function getCancionIdcancions()
     {
-        return $this->hasMany(Cancion::class, ['idcancion' => 'cancion_idcancion', 'album_idalbum' => 'cancion_album_idalbum', 'album_artista_idartista' => 'cancion_album_artista_idartista', 'genero_idgenero' => 'cancion_genero_idgenero'])->viaTable('playlist_has_cancion', ['playlist_idplaylist' => 'idplaylist', 'playlist_usuario_idusuario' => 'usuario_idusuario']);
+        return $this->hasMany(Cancion::class, ['idcancion' => 'cancion_idcancion'])->viaTable('playlist_has_cancion', ['playlist_idplaylist' => 'idplaylist']);
     }
 
     /**
@@ -69,7 +100,7 @@ class Playlist extends \yii\db\ActiveRecord
      */
     public function getPlaylistHasCancions()
     {
-        return $this->hasMany(PlaylistHasCancion::class, ['playlist_idplaylist' => 'idplaylist', 'playlist_usuario_idusuario' => 'usuario_idusuario']);
+        return $this->hasMany(PlaylistHasCancion::class, ['playlist_idplaylist' => 'idplaylist']);
     }
 
     /**

@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Artista;
+use app\models\Cancion;
 
 /** @var yii\web\View $this */
 /** @var app\models\Album $model */
@@ -37,6 +38,7 @@ use app\models\Artista;
                                                                                                     -> asArray()
                                                                                                     -> all(), 'idartista', 'nombre'), ['prompt'=> 'Seleccione un Artista', 'required'=> true]) 
     ?>
+
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

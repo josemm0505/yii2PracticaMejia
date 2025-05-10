@@ -18,7 +18,7 @@ class PlaylistSearch extends Playlist
     {
         return [
             [['idplaylist', 'usuario_idusuario'], 'integer'],
-            [['nombre'], 'safe'],
+            [['nombre', 'createAt', 'updateAt'], 'safe'],
         ];
     }
 
@@ -61,6 +61,8 @@ class PlaylistSearch extends Playlist
         $query->andFilterWhere([
             'idplaylist' => $this->idplaylist,
             'usuario_idusuario' => $this->usuario_idusuario,
+            'createAt' => $this->createAt,
+            'updateAt' => $this->updateAt,
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre]);

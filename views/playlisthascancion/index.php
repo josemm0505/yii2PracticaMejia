@@ -1,19 +1,19 @@
 <?php
 
-use app\models\Playlist_Has_Cancion;
+use app\models\PlaylistHasCancion;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /** @var yii\web\View $this */
-/** @var app\models\Playlist_Has_CancionSearch $searchModel */
+/** @var app\models\PlaylistHasCancionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Playlist Has Cancions');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="playlist--has--cancion-index">
+<div class="playlist-has-cancion-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -31,15 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'playlist_idplaylist',
-            'playlist_usuario_idusuario',
             'cancion_idcancion',
-            'cancion_album_idalbum',
-            'cancion_album_artista_idartista',
-            //'cancion_genero_idgenero',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Playlist_Has_Cancion $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'playlist_idplaylist' => $model->playlist_idplaylist, 'playlist_usuario_idusuario' => $model->playlist_usuario_idusuario, 'cancion_idcancion' => $model->cancion_idcancion, 'cancion_album_idalbum' => $model->cancion_album_idalbum, 'cancion_album_artista_idartista' => $model->cancion_album_artista_idartista, 'cancion_genero_idgenero' => $model->cancion_genero_idgenero]);
+                'urlCreator' => function ($action, PlaylistHasCancion $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'playlist_idplaylist' => $model->playlist_idplaylist, 'cancion_idcancion' => $model->cancion_idcancion]);
                  }
             ],
         ],
