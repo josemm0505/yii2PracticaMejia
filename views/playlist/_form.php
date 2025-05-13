@@ -17,10 +17,10 @@ use app\models\Cancion;
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true,'placeholder' => 'Nombre de la Playlist', 'required'=>true]) ?>
 
-    <?= $form->field($model, 'usuario_idusuario')->dropDownList(ArrayHelper :: map(Usuario :: find()-> select(['idusuario', 'nombre'])
-                                                                                                    -> orderBy('nombre')
+    <?= $form->field($model, 'usuario_idusuario')->dropDownList(ArrayHelper :: map(Usuario :: find()-> select(['idusuario', 'username'])
+                                                                                                    -> orderBy('username')
                                                                                                     -> asArray()
-                                                                                                    -> all(), 'idusuario', 'nombre'), ['prompt'=> 'Seleccione un Usuario', 'required'=> true]) ?>
+                                                                                                    -> all(), 'idusuario', 'username'), ['prompt'=> 'Seleccione un Usuario', 'required'=> true]) ?>
 
 <div class="mb-3">
         <?= Html :: label ('Seleccione las canciones para la playlist', 'cancion-search', ['class'=>'form-label']) ?>
