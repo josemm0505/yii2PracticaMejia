@@ -45,7 +45,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     return null;
                 }
             ],
-            'artista_idartista',
+            [
+                'attribute'=>'artista_idartista',
+                'format'=>'html',
+                'value'=>function($model){
+                    return $model->artista_idartista ? $model->artistaIdartista->nombre : '(Sin artista)';
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Album $model, $key, $index, $column) {

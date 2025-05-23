@@ -54,7 +54,7 @@ class Playlist extends \yii\db\ActiveRecord
         return [
             'idplaylist' => Yii::t('app', 'Idplaylist'),
             'nombre' => Yii::t('app', 'Nombre'),
-            'usuario_idusuario' => Yii::t('app', 'Usuario Idusuario'),
+            'usuario_idusuario' => Yii::t('app', 'Usuario'),
             'canciones' => Yii::t('app', 'Canciones')
         ];
     }
